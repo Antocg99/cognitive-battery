@@ -7,7 +7,11 @@ import pygame
 
 from pygame.locals import *
 from itertools import product
+
+
+
 from utils import display
+#import display
 
 
 class ANT(object):
@@ -259,11 +263,14 @@ class ANT(object):
 
         # Store reaction time and response
         rt = int(round(time.time() * 1000)) - start_time
-        data.set_value(trial_num, "RT", rt)
-        data.set_value(trial_num, "response", response)
+        #data.set_value(trial_num, "RT", rt)
+        data.at[trial_num, "RT"] = rt
+        #data.set_value(trial_num, "response", response)
+        data.at[trial_num, "response"] = response
 
         correct = 1 if response == data["direction"][trial_num] else 0
-        data.set_value(trial_num, "correct", correct)
+        #data.set_value(trial_num, "correct", correct)
+        data.at[trial_num, "correct"] = correct
 
         # Display feedback if practice trials
         if trial_type == "practice":
@@ -286,7 +293,8 @@ class ANT(object):
         pygame.display.flip()
 
         iti = self.ITI_MAX - rt - data["fixationTime"][trial_num]
-        data.set_value(trial_num, "ITI", iti)
+        #data.set_value(trial_num, "ITI", iti)
+        data.at[trial_num, "ITI"] = iti
 
         display.wait(iti)
 
@@ -437,3 +445,32 @@ class ANT(object):
         print("- ANT complete")
 
         return self.all_data
+
+
+def main():
+    # Initialize Pygame
+    pygame.init()
+
+    # Set up the screen size (for example, 800x600)
+    screen_width, screen_height = 800, 600
+    screen = pygame.display.set_mode((screen_width, screen_height))
+
+    # Create a background surface and fill it with white
+    background = pygame.Surface(screen.get_size())
+    background = background.convert()
+    background.fill((255, 255, 255))  # White background
+
+    # Instantiate the ANT class
+    ant_test = ANT(screen, background)
+
+    # Run the ANT task
+    ant_data = ant_test.run()
+
+    # Optionally, save the result to a CSV file
+    ant_data.to_csv("ant_task_results.csv", index=False)
+
+    # Quit Pygame after completing the task
+    pygame.quit()
+
+if __name__ == "__main__":
+    main()
