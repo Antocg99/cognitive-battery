@@ -7,12 +7,12 @@ import pandas as pd
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from utils import display, values
-from designer import battery_window_qt
+from designer import battery_window_qt_mod
 from interface import about_dialog, update_dialog, settings_window
 from tasks import ant, flanker, mrt, sart, ravens, digitspan_backwards, sternberg
 
 
-class BatteryWindow(QtWidgets.QMainWindow, battery_window_qt.Ui_CognitiveBattery):
+class BatteryWindow(QtWidgets.QMainWindow, battery_window_qt_mod.Ui_CognitiveBattery):
     def __init__(self, base_dir, project_dir, res_width, res_height):
         super(BatteryWindow, self).__init__()
 

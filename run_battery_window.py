@@ -5,7 +5,7 @@ import sys
 
 from PyQt5 import QtWidgets
 
-from interface import project_window
+from interface import  battery_window
 
 if __name__ == "__main__":
     # Get application directory
@@ -14,9 +14,10 @@ if __name__ == "__main__":
     # Create project manager window
     app = QtWidgets.QApplication(sys.argv)
     screen_resolution = app.desktop().screenGeometry()
+    project_dir = os.path.join(base_dir, 'cognitive-battery')
 
-    project_manager = project_window.ProjectWindow(
-        base_dir, screen_resolution.width(), screen_resolution.height()
+    project_manager = battery_window.BatteryWindow(
+        base_dir, project_dir, screen_resolution.width(), screen_resolution.height()
     )
     project_manager.show()
 
