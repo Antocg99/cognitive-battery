@@ -13,7 +13,7 @@ from tasks import ant, flanker, mrt, sart, ravens, digitspan_backwards, sternber
 
 
 class BatteryWindow(QtWidgets.QMainWindow, battery_window_qt_mod.Ui_CognitiveBattery):
-    def __init__(self, base_dir, project_dir, res_width, res_height):
+    def __init__(self, base_dir, project_dir, res_width, res_height, data_save_path):
         super(BatteryWindow, self).__init__()
 
         # Setup the main window UI
@@ -35,6 +35,7 @@ class BatteryWindow(QtWidgets.QMainWindow, battery_window_qt_mod.Ui_CognitiveBat
         self.project_dir = project_dir
         self.res_width = res_width
         self.res_height = res_height
+        self.data_save_path = data_save_path
 
         # Create/open settings file with no registry fallback
         self.settings_file = os.path.join(self.project_dir, "battery_settings.ini")
@@ -454,11 +455,11 @@ class BatteryWindow(QtWidgets.QMainWindow, battery_window_qt_mod.Ui_CognitiveBat
                 # Run ANT
                 ant_data = ant_task.run()
                 # Check if the file exists, if not create it
-                if not os.path.exists(os.path.join(self.dataPath, "ANT.json")):
-                    with open(os.path.join(self.dataPath, "ANT.json"), 'w') as f:
+                if not os.path.exists(os.path.join(self.data_save_path, "ANT.json")):
+                    with open(os.path.join(self.data_save_path, "ANT.json"), 'w') as f:
                         pass
                 # Save ANT data to JSON
-                ant_data.to_json(os.path.join(self.dataPath, "ANT.json"), orient='records', lines=True)
+                ant_data.to_json(os.path.join(self.data_save_path, "ANT.json"), orient='records', lines=True)
             elif task == "Digit Span (backwards)":
                 digitspan_backwards_task = digitspan_backwards.DigitspanBackwards(
                     self.pygame_screen, background
@@ -467,11 +468,11 @@ class BatteryWindow(QtWidgets.QMainWindow, battery_window_qt_mod.Ui_CognitiveBat
                 digitspan_backwards_data = digitspan_backwards_task.run()
                 # Save digit span (backwards) data to excel
                 # Check if the file exists, if not create it
-                if not os.path.exists(os.path.join(self.dataPath, "DigitSpanBackwards.json")):
-                    with open(os.path.join(self.dataPath, "DigitSpanBackwards.json"), 'w') as f:
+                if not os.path.exists(os.path.join(self.data_save_path, "DigitSpanBackwards.json")):
+                    with open(os.path.join(self.data_save_path, "DigitSpanBackwards.json"), 'w') as f:
                         pass
                 # Save digit span (backwards) data to JSON
-                digitspan_backwards_data.to_json(os.path.join(self.dataPath, "DigitSpanBackwards.json"), orient='records', lines=True)
+                digitspan_backwards_data.to_json(os.path.join(self.data_save_path, "DigitSpanBackwards.json"), orient='records', lines=True)
             
                 """
                 elif task == "Eriksen Flanker Task":
@@ -530,11 +531,11 @@ class BatteryWindow(QtWidgets.QMainWindow, battery_window_qt_mod.Ui_CognitiveBat
                 sternberg_data = sternberg_task.run()
                 # Save sternberg data to excel
                 # Check if the file exists, if not create it
-                if not os.path.exists(os.path.join(self.dataPath, "Sternberg.json")):
-                    with open(os.path.join(self.dataPath, "Sternberg.json"), 'w') as f:
+                if not os.path.exists(os.path.join(self.data_save_path, "Sternberg.json")):
+                    with open(os.path.join(self.data_save_path, "Sternberg.json"), 'w') as f:
                         pass
                 # Save Sternberg data to JSON
-                sternberg_data.to_json(os.path.join(self.dataPath, "Sternberg.json"), orient='records', lines=True)
+                sternberg_data.to_json(os.path.join(self.data_save_path, "Sternberg.json"), orient='records', lines=True)
             """
             elif task == "Sustained Attention to Response Task (SART)":
                 sart_task = sart.SART(self.pygame_screen, background)
