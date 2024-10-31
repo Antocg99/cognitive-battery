@@ -1,0 +1,15 @@
+{"trial":1,"block":1,"congruency":"congruent","cue":"spatial","location":"top","fixationTime":548,"ITI":2373.0,"direction":"right","response":"right","correct":1.0,"RT":579.0}
+{"trial":2,"block":1,"congruency":"incongruent","cue":"nocue","location":"bottom","fixationTime":1305,"ITI":1538.0,"direction":"right","response":"right","correct":1.0,"RT":657.0}
+{"trial":3,"block":1,"congruency":"incongruent","cue":"spatial","location":"bottom","fixationTime":903,"ITI":2144.0,"direction":"right","response":"right","correct":1.0,"RT":453.0}
+{"trial":4,"block":1,"congruency":"congruent","cue":"spatial","location":"bottom","fixationTime":1444,"ITI":1449.0,"direction":"left","response":"left","correct":1.0,"RT":607.0}
+{"trial":5,"block":1,"congruency":"congruent","cue":"nocue","location":"top","fixationTime":1530,"ITI":920.0,"direction":"right","response":"right","correct":1.0,"RT":1050.0}
+{"trial":6,"block":2,"congruency":"neutral","cue":"center","location":"bottom","fixationTime":1075,"ITI":1846.0,"direction":"right","response":"right","correct":1.0,"RT":579.0}
+{"trial":7,"block":2,"congruency":"neutral","cue":"nocue","location":"top","fixationTime":1338,"ITI":1558.0,"direction":"right","response":"right","correct":1.0,"RT":604.0}
+{"trial":8,"block":2,"congruency":"incongruent","cue":"spatial","location":"bottom","fixationTime":1345,"ITI":1533.0,"direction":"left","response":"left","correct":1.0,"RT":622.0}
+{"trial":9,"block":2,"congruency":"incongruent","cue":"center","location":"top","fixationTime":1432,"ITI":1485.0,"direction":"right","response":"right","correct":1.0,"RT":583.0}
+{"trial":10,"block":2,"congruency":"congruent","cue":"center","location":"top","fixationTime":688,"ITI":2192.0,"direction":"right","response":"right","correct":1.0,"RT":620.0}
+{"trial":11,"block":3,"congruency":"incongruent","cue":"nocue","location":"top","fixationTime":1009,"ITI":1753.0,"direction":"left","response":"left","correct":1.0,"RT":738.0}
+{"trial":12,"block":3,"congruency":"incongruent","cue":"nocue","location":"bottom","fixationTime":927,"ITI":1946.0,"direction":"left","response":"left","correct":1.0,"RT":627.0}
+{"trial":13,"block":3,"congruency":"congruent","cue":"nocue","location":"bottom","fixationTime":747,"ITI":1053.0,"direction":"left","response":"NA","correct":0.0,"RT":1700.0}
+{"trial":14,"block":3,"congruency":"incongruent","cue":"spatial","location":"top","fixationTime":1144,"ITI":1669.0,"direction":"right","response":"right","correct":1.0,"RT":687.0}
+{"trial":15,"block":3,"congruency":"congruent","cue":"double","location":"bottom","fixationTime":1229,"ITI":1810.0,"direction":"right","response":"right","correct":1.0,"RT":461.0}

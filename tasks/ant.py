@@ -96,11 +96,13 @@ class ANT(object):
 
     def create_block(self, block_num, combinations, trial_type):
         if trial_type == "main":
-            cur_combinations = combinations * 2
-            np.random.shuffle(cur_combinations)
+            # Shuffle combinations, then select 20 trials
+            np.random.shuffle(combinations)
+            cur_combinations = combinations[:5]
         else:
             np.random.shuffle(combinations)
-            cur_combinations = combinations[: len(combinations) // 2]
+            cur_combinations = combinations[: 5]
+            #cur_combinations = combinations[:5]
 
         # Add combinations to dataframe
         cur_block = pd.DataFrame(
@@ -120,6 +122,7 @@ class ANT(object):
         ]
 
         return cur_block
+        
 
     def display_flanker(self, flanker_type, location, direction):
         # Left flanker
@@ -406,6 +409,7 @@ class ANT(object):
             100,
             self.screen_y / 2 + 50,
         )
+
         display.text_space(self.screen, self.font, "center", self.screen_y / 2 + 200)
         pygame.display.flip()
 

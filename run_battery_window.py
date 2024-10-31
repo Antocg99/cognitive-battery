@@ -1,5 +1,5 @@
-from __future__ import division, print_function
 #https://github.com/sho-87/cognitive-battery.git
+from __future__ import division, print_function
 import os
 import sys
 
@@ -16,9 +16,7 @@ if __name__ == "__main__":
     screen_resolution = app.desktop().screenGeometry()
     project_dir = os.path.join(base_dir, 'cognitive-battery')
 
-    project_manager = battery_window.BatteryWindow(
-        base_dir, project_dir, screen_resolution.width(), screen_resolution.height()
-    )
+    project_manager = battery_window.BatteryWindow(base_dir, project_dir, screen_resolution.width(), screen_resolution.height())
     project_manager.show()
 
     sys.exit(app.exec_())

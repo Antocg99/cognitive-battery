@@ -42,13 +42,11 @@ class Sternberg(object):
         )
 
         # Experiment options
-        # Timings are taken from Sternberg (1966)
-        # Block sizes are taken from Martins (2012)
         self.NUM_BLOCKS = blocks
         self.STIM_DURATION = 1200
         self.BETWEEN_STIM_DURATION = 250
         self.PROBE_WARN_DURATION = 2000
-        self.PROBE_DURATION = 2250  # Max time per probe, from Martins (2012)
+        self.PROBE_DURATION = 2250
         self.FEEDBACK_DURATION = 1000
         self.ITI = 1500
 
@@ -60,39 +58,35 @@ class Sternberg(object):
         self.combinations = list(product(self.SET_SIZE, self.PROBE_TYPE))
 
         # Create practice trials
-        # This gives 24 practice trials
         self.practice_combinations = self.combinations * 6
         random.shuffle(self.practice_combinations)
         self.practice_trials = self.create_trials(self.practice_combinations)
 
         # Create main trial blocks
-        self.blocks = []  # List will contain a dataframe for each block
+        self.blocks = []
 
         for i in range(self.NUM_BLOCKS):
-            # This creates 48 trials per block
             block_combinations = self.combinations * 12
             random.shuffle(block_combinations)
 
             block = self.create_trials(block_combinations)
-            block["block"] = str(i + 1)  # Store the block number
+            block["block"] = str(i + 1)
             self.blocks.append(block)
 
     def create_trials(self, combinations):
         df = pd.DataFrame(combinations, columns=("setSize", "probeType"))
 
         for i, r in df.iterrows():
-            # Store the current used set
             used_set = random.sample(self.STIM_SET, r["setSize"])
             unused_set = list(set(self.STIM_SET) - set(used_set))
 
-            df.set_value(i, "set", "".join(str(x) for x in used_set))
+            df.at[i, "set"] = "".join(str(x) for x in used_set)
 
             # Store the target probe number
-            # Probe will be from/in the set 50% of the time (probe present)
             if r["probeType"] == "present":
-                df.set_value(i, "probe", str(random.choice(used_set)))
+                df.at[i, "probe"] = str(random.choice(used_set))
             else:
-                df.set_value(i, "probe", str(random.choice(unused_set)))
+                df.at[i, "probe"] = str(random.choice(unused_set))
 
             # Store blank columns to be used later
             df["trialNum"] = ""
@@ -185,23 +179,22 @@ class Sternberg(object):
         while wait_response:
             for event in pygame.event.get():
                 if event.type == KEYDOWN and event.key == K_LEFT:
-                    df.set_value(i, "response", "present")
+                    df.at[i, "response"] = "present"
                     wait_response = False
                 elif event.type == KEYDOWN and event.key == K_RIGHT:
-                    df.set_value(i, "response", "absent")
+                    df.at[i, "response"] = "absent"
                     wait_response = False
                 elif event.type == KEYDOWN and event.key == K_F12:
                     sys.exit(0)
 
             end_time = int(round(time.time() * 1000))
 
-            # If time limit has been reached, consider it a missed trial
             if end_time - start_time >= self.PROBE_DURATION:
                 wait_response = False
 
         # Store RT
         rt = int(round(time.time() * 1000)) - start_time
-        df.set_value(i, "RT", rt)
+        df.at[i, "RT"] = rt
 
         # Display blank screen
         display.blank_screen(self.screen, self.background, self.BETWEEN_STIM_DURATION)
@@ -210,18 +203,18 @@ class Sternberg(object):
         self.screen.blit(self.background, (0, 0))
 
         if rt >= self.PROBE_DURATION:
-            df.set_value(i, "correct", 0)
+            df.at[i, "correct"] = 0
             display.text(
                 self.screen, self.font, "too slow", "center", "center", (255, 165, 0)
             )
         else:
             if df["probeType"][i] == df["response"][i]:
-                df.set_value(i, "correct", 1)
+                df.at[i, "correct"] = 1
                 display.text(
                     self.screen, self.font, "correct", "center", "center", (0, 255, 0)
                 )
             else:
-                df.set_value(i, "correct", 0)
+                df.at[i, "correct"] = 0
                 display.text(
                     self.screen, self.font, "incorrect", "center", "center", (255, 0, 0)
                 )

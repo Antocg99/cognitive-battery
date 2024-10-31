@@ -151,6 +151,7 @@ class Ui_CognitiveBattery(object):
         item = QtWidgets.QListWidgetItem()
         item.setCheckState(QtCore.Qt.Unchecked)
         self.taskList.addItem(item)
+        """
         item = QtWidgets.QListWidgetItem()
         item.setCheckState(QtCore.Qt.Unchecked)
         self.taskList.addItem(item)
@@ -162,6 +163,7 @@ class Ui_CognitiveBattery(object):
         self.taskList.addItem(item)
         item = QtWidgets.QListWidgetItem()
         item.setCheckState(QtCore.Qt.Unchecked)
+        """
         self.taskList.addItem(item)
         self.taskListLayout.addWidget(self.taskList)
         self.reorderButtonLayout = QtWidgets.QVBoxLayout()
@@ -285,20 +287,27 @@ class Ui_CognitiveBattery(object):
         self.deselectAllButton.setText(_translate("CognitiveBattery", "Deselect All"))
         __sortingEnabled = self.taskList.isSortingEnabled()
         self.taskList.setSortingEnabled(False)
+        # Set the text for each task in the task list
         item = self.taskList.item(0)
         item.setText(_translate("CognitiveBattery", "Attention Network Test (ANT)"))
+        
         item = self.taskList.item(1)
         item.setText(_translate("CognitiveBattery", "Digit Span (backwards)"))
+        
+        #item = self.taskList.item(2)
+        #item.setText(_translate("CognitiveBattery", "Eriksen Flanker Task"))
+        
+        #item = self.taskList.item(3)
+        #item.setText(_translate("CognitiveBattery", "Mental Rotation Task"))
+        
+        #item = self.taskList.item(4)
+        #item.setText(_translate("CognitiveBattery", "Raven's Progressive Matrices"))
+        
         item = self.taskList.item(2)
-        item.setText(_translate("CognitiveBattery", "Eriksen Flanker Task"))
-        item = self.taskList.item(3)
-        item.setText(_translate("CognitiveBattery", "Mental Rotation Task"))
-        item = self.taskList.item(4)
-        item.setText(_translate("CognitiveBattery", "Raven\'s Progressive Matrices"))
-        item = self.taskList.item(5)
         item.setText(_translate("CognitiveBattery", "Sternberg Task"))
-        item = self.taskList.item(6)
-        item.setText(_translate("CognitiveBattery", "Sustained Attention to Response Task (SART)"))
+        
+        #item = self.taskList.item(6)
+        #item.setText(_translate("CognitiveBattery", "Sustained Attention to Response Task (SART)"))
         self.taskList.setSortingEnabled(__sortingEnabled)
         self.upButton.setStatusTip(_translate("CognitiveBattery", "Move selected task up in order of administration"))
         self.upButton.setText(_translate("CognitiveBattery", "Up"))

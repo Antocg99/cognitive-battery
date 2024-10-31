@@ -123,6 +123,7 @@ class BatteryWindow(QtWidgets.QMainWindow, battery_window_qt_mod.Ui_CognitiveBat
         self.settings.setValue("numBlocks", self.settings.value("numBlocks", 3))
         self.settings.endGroup()
 
+        """
         # Settings - Flanker
         self.settings.beginGroup("Flanker")
         self.settings.setValue("darkMode", self.settings.value("darkMode", "false"))
@@ -136,12 +137,15 @@ class BatteryWindow(QtWidgets.QMainWindow, battery_window_qt_mod.Ui_CognitiveBat
             "blockOrder", self.settings.value("blockOrder", "compatible")
         )
         self.settings.endGroup()
+        """
 
+        """
         # Settings - Ravens
         self.settings.beginGroup("Ravens")
         self.settings.setValue("startImage", self.settings.value("startImage", 13))
         self.settings.setValue("numTrials", self.settings.value("numTrials", 12))
         self.settings.endGroup()
+        """
 
         # Settings - Sternberg Task
         self.settings.beginGroup("Sternberg")
@@ -273,6 +277,7 @@ class BatteryWindow(QtWidgets.QMainWindow, battery_window_qt_mod.Ui_CognitiveBat
         self.settings.endGroup()
 
         # Flanker settings
+        """
         self.settings.beginGroup("Flanker")
         if self.settings.value("darkMode") == "true":
             self.flanker_dark_mode = True
@@ -285,12 +290,15 @@ class BatteryWindow(QtWidgets.QMainWindow, battery_window_qt_mod.Ui_CognitiveBat
         self.flanker_blocks_incompat = int(self.settings.value("blocksIncompat"))
         self.flanker_block_order = str(self.settings.value("blockOrder"))
         self.settings.endGroup()
-
+        
+        """
+        """
         # Ravens settings
         self.settings.beginGroup("Ravens")
         self.ravens_start = int(self.settings.value("startImage"))
         self.ravens_trials = int(self.settings.value("numTrials"))
         self.settings.endGroup()
+        """
 
         # Sternberg settings
         self.settings.beginGroup("Sternberg")
@@ -337,6 +345,7 @@ class BatteryWindow(QtWidgets.QMainWindow, battery_window_qt_mod.Ui_CognitiveBat
         # Check for required inputs
         if not selected_tasks:
             self.error_dialog("No tasks selected")
+        """
         elif not ra:
             self.error_dialog("Please enter RA name...")
         elif not sub_num:
@@ -373,183 +382,200 @@ class BatteryWindow(QtWidgets.QMainWindow, battery_window_qt_mod.Ui_CognitiveBat
             )
 
             # Check if subject number already exists
-            existing_subs = [x.split("_")[0] for x in os.listdir(self.dataPath)]
-            if sub_num in existing_subs:
-                self.error_dialog("Subject number already exists")
+            #existing_subs = [x.split("_")[0] for x in os.listdir(self.dataPath)]
+            #if sub_num in existing_subs:
+                #self.error_dialog("Subject number already exists")
+            #else:
+            # Create the excel writer object and save the file
+            data_file_name = "%s_%s.xlsx" % (sub_num, condition)
+            output_file = os.path.join(self.dataPath, data_file_name)
+            writer = pd.ExcelWriter(output_file)
+            subject_info.to_excel(writer, "info", index=False)        
+        """
+
+            #writer.save()
+
+            # Minimize battery UI
+        self.showMinimized()
+
+        # Get most recent task settings from file
+        self.get_settings()
+
+        # Center all pygame windows if not fullscreen
+        if not self.task_fullscreen:
+            pos_x = self.res_width // 2 - self.task_width // 2
+            pos_y = self.res_height // 2 - self.task_height // 2
+
+            os.environ["SDL_VIDEO_WINDOW_POS"] = "%s, %s" % (
+                str(pos_x),
+                str(pos_y),
+            )
+
+        # Initialize pygame
+        pygame.init()
+
+        # Load beep sound
+        beep_sound = pygame.mixer.Sound(
+            os.path.join(self.base_dir, "tasks", "media", "beep_med.wav")
+        )
+
+        # Set pygame icon image
+        image = os.path.join(self.base_dir, "images", "icon_sml.png")
+        icon_img = pygame.image.load(image)
+        pygame.display.set_icon(icon_img)
+
+        # Create primary task window
+        # pygame_screen is passed to each task as the display window
+        if self.task_fullscreen:
+            self.pygame_screen = pygame.display.set_mode(
+                (0, 0), pygame.FULLSCREEN
+            )
+        else:
+            if self.task_borderless:
+                self.pygame_screen = pygame.display.set_mode(
+                    (self.task_width, self.task_height), pygame.NOFRAME
+                )
             else:
-                # Create the excel writer object and save the file
-                data_file_name = "%s_%s.xlsx" % (sub_num, condition)
-                output_file = os.path.join(self.dataPath, data_file_name)
-                writer = pd.ExcelWriter(output_file)
-                subject_info.to_excel(writer, "info", index=False)
+                self.pygame_screen = pygame.display.set_mode(
+                    (self.task_width, self.task_height)
+                )
+
+        background = pygame.Surface(self.pygame_screen.get_size())
+        background = background.convert()
+
+            # Run each task
+            # Return and save their output to dataframe/excel
+        for task in selected_tasks:
+            if task == "Attention Network Test (ANT)":
+                # Set number of blocks for ANT
+                ant_task = ant.ANT(
+                    self.pygame_screen, background, blocks=self.ant_blocks
+                )
+                # Run ANT
+                ant_data = ant_task.run()
+                # Check if the file exists, if not create it
+                if not os.path.exists(os.path.join(self.dataPath, "ANT.json")):
+                    with open(os.path.join(self.dataPath, "ANT.json"), 'w') as f:
+                        pass
+                # Save ANT data to JSON
+                ant_data.to_json(os.path.join(self.dataPath, "ANT.json"), orient='records', lines=True)
+            elif task == "Digit Span (backwards)":
+                digitspan_backwards_task = digitspan_backwards.DigitspanBackwards(
+                    self.pygame_screen, background
+                )
+                # Run Digit span (Backwards)
+                digitspan_backwards_data = digitspan_backwards_task.run()
+                # Save digit span (backwards) data to excel
+                # Check if the file exists, if not create it
+                if not os.path.exists(os.path.join(self.dataPath, "DigitSpanBackwards.json")):
+                    with open(os.path.join(self.dataPath, "DigitSpanBackwards.json"), 'w') as f:
+                        pass
+                # Save digit span (backwards) data to JSON
+                digitspan_backwards_data.to_json(os.path.join(self.dataPath, "DigitSpanBackwards.json"), orient='records', lines=True)
+            
+                """
+                elif task == "Eriksen Flanker Task":
+                    flanker_task = flanker.Flanker(
+                        self.pygame_screen,
+                        background,
+                        self.flanker_dark_mode,
+                        self.flanker_sets_practice,
+                        self.flanker_sets_main,
+                        self.flanker_blocks_compat,
+                        self.flanker_blocks_incompat,
+                        self.flanker_block_order,
+                    )
+                    # Run Eriksen Flanker
+                    flanker_data = flanker_task.run()
+                    # Save flanker data to excel
+                    # Check if the file exists, if not create it
+                    if not os.path.exists(os.path.join(self.dataPath, "EriksenFlanker.json")):
+                        with open(os.path.join(self.dataPath, "EriksenFlanker.json"), 'w') as f:
+                            pass
+                    # Save flanker data to JSON
+                    flanker_data.to_json(os.path.join(self.dataPath, "EriksenFlanker.json"), orient='records', lines=True)
+                elif task == "Mental Rotation Task":
+                    mrt_task = mrt.MRT(self.pygame_screen, background)
+                    # Run MRT
+                    mrt_data = mrt_task.run()
+                    # Save MRT data to excel
+                    # Check if the file exists, if not create it
+                    if not os.path.exists(os.path.join(self.dataPath, "MRT.json")):
+                        with open(os.path.join(self.dataPath, "MRT.json"), 'w') as f:
+                            pass
+                    # Save MRT data to JSON
+                    mrt_data.to_json(os.path.join(self.dataPath, "MRT.json"), orient='records', lines=True)
+                elif task == "Raven's Progressive Matrices":
+                    ravens_task = ravens.Ravens(
+                        self.pygame_screen,
+                        background,
+                        start=self.ravens_start,
+                        numTrials=self.ravens_trials,
+                    )
+                    # Run Raven's Matrices
+                    ravens_data = ravens_task.run()
+                    # Save ravens data to excel
+                    # Check if the file exists, if not create it
+                    if not os.path.exists(os.path.join(self.dataPath, "RavensMatrices.json")):
+                        with open(os.path.join(self.dataPath, "RavensMatrices.json"), 'w') as f:
+                            pass
+                    # Save ravens data to JSON
+                    ravens_data.to_json(os.path.join(self.dataPath, "RavensMatrices.json"), orient='records', lines=True)
+                """
+            elif task == "Sternberg Task":
+                sternberg_task = sternberg.Sternberg(
+                    self.pygame_screen, background, blocks=self.sternberg_blocks
+                )
+                # Run Sternberg Task
+                sternberg_data = sternberg_task.run()
+                # Save sternberg data to excel
+                # Check if the file exists, if not create it
+                if not os.path.exists(os.path.join(self.dataPath, "Sternberg.json")):
+                    with open(os.path.join(self.dataPath, "Sternberg.json"), 'w') as f:
+                        pass
+                # Save Sternberg data to JSON
+                sternberg_data.to_json(os.path.join(self.dataPath, "Sternberg.json"), orient='records', lines=True)
+            """
+            elif task == "Sustained Attention to Response Task (SART)":
+                sart_task = sart.SART(self.pygame_screen, background)
+                # Run SART
+                sart_data = sart_task.run()
+                # Save SART data to excel
+                # Check if the file exists, if not create it
+                if not os.path.exists(os.path.join(self.dataPath, "SART.json")):
+                    with open(os.path.join(self.dataPath, "SART.json"), 'w') as f:
+                        pass
+                # Save SART data to JSON
+                sart_data.to_json(os.path.join(self.dataPath, "SART.json"), orient='records', lines=True)
+            """
+
+            # Play beep after each task
+            if self.task_beep:
+                beep_sound.play()
+
+                # Save excel file
                 #writer.save()
 
-                # Minimize battery UI
-                self.showMinimized()
+            # End of experiment screen
+            pygame.display.set_caption("Cognitive Battery")
+            pygame.mouse.set_visible(1)
 
-                # Get most recent task settings from file
-                self.get_settings()
+            background.fill((255, 255, 255))
+            self.pygame_screen.blit(background, (0, 0))
 
-                # Center all pygame windows if not fullscreen
-                if not self.task_fullscreen:
-                    pos_x = self.res_width // 2 - self.task_width // 2
-                    pos_y = self.res_height // 2 - self.task_height // 2
+            font = pygame.font.SysFont("arial", 30)
+            display.text(
+                self.pygame_screen, font, "End of Experiment", "center", "center"
+            )
 
-                    os.environ["SDL_VIDEO_WINDOW_POS"] = "%s, %s" % (
-                        str(pos_x),
-                        str(pos_y),
-                    )
+            pygame.display.flip()
 
-                # Initialize pygame
-                pygame.init()
+            display.wait_for_space()
 
-                # Load beep sound
-                beep_sound = pygame.mixer.Sound(
-                    os.path.join(self.base_dir, "tasks", "media", "beep_med.wav")
-                )
+            # Quit pygame
+            pygame.quit()
 
-                # Set pygame icon image
-                image = os.path.join(self.base_dir, "images", "icon_sml.png")
-                icon_img = pygame.image.load(image)
-                pygame.display.set_icon(icon_img)
-
-                # Create primary task window
-                # pygame_screen is passed to each task as the display window
-                if self.task_fullscreen:
-                    self.pygame_screen = pygame.display.set_mode(
-                        (0, 0), pygame.FULLSCREEN
-                    )
-                else:
-                    if self.task_borderless:
-                        self.pygame_screen = pygame.display.set_mode(
-                            (self.task_width, self.task_height), pygame.NOFRAME
-                        )
-                    else:
-                        self.pygame_screen = pygame.display.set_mode(
-                            (self.task_width, self.task_height)
-                        )
-
-                background = pygame.Surface(self.pygame_screen.get_size())
-                background = background.convert()
-
-                # Run each task
-                # Return and save their output to dataframe/excel
-                for task in selected_tasks:
-                    if task == "Attention Network Test (ANT)":
-                        # Set number of blocks for ANT
-                        ant_task = ant.ANT(
-                            self.pygame_screen, background, blocks=self.ant_blocks
-                        )
-                        # Run ANT
-                        ant_data = ant_task.run()
-                        # Save ANT data to excel
-                        ant_data.to_excel(writer, "ANT", index=False)
-                    elif task == "Digit Span (backwards)":
-                        digitspan_backwards_task = digitspan_backwards.DigitspanBackwards(
-                            self.pygame_screen, background
-                        )
-                        # Run Digit span (Backwards)
-                        digitspan_backwards_data = digitspan_backwards_task.run()
-                        # Save digit span (backwards) data to excel
-                        digitspan_backwards_data.to_excel(
-                            writer, "Digit span (backwards)", index=False
-                        )
-                    elif task == "Eriksen Flanker Task":
-                        flanker_task = flanker.Flanker(
-                            self.pygame_screen,
-                            background,
-                            self.flanker_dark_mode,
-                            self.flanker_sets_practice,
-                            self.flanker_sets_main,
-                            self.flanker_blocks_compat,
-                            self.flanker_blocks_incompat,
-                            self.flanker_block_order,
-                        )
-                        # Run Eriksen Flanker
-                        flanker_data = flanker_task.run()
-                        # Save flanker data to excel
-                        flanker_data.to_excel(writer, "Eriksen Flanker", index=False)
-                    elif task == "Mental Rotation Task":
-                        mrt_task = mrt.MRT(self.pygame_screen, background)
-                        # Run MRT
-                        mrt_data = mrt_task.run()
-                        # Save MRT data to excel
-                        mrt_data.to_excel(writer, "MRT", index=False)
-                    elif task == "Raven's Progressive Matrices":
-                        ravens_task = ravens.Ravens(
-                            self.pygame_screen,
-                            background,
-                            start=self.ravens_start,
-                            numTrials=self.ravens_trials,
-                        )
-                        # Run Raven's Matrices
-                        ravens_data = ravens_task.run()
-                        # Save ravens data to excel
-                        ravens_data.to_excel(writer, "Ravens Matrices", index=False)
-                    elif task == "Sternberg Task":
-                        sternberg_task = sternberg.Sternberg(
-                            self.pygame_screen, background, blocks=self.sternberg_blocks
-                        )
-                        # Run Sternberg Task
-                        sternberg_data = sternberg_task.run()
-                        # Save sternberg data to excel
-                        sternberg_data.to_excel(writer, "Sternberg", index=False)
-                    elif task == "Sustained Attention to Response Task (SART)":
-                        sart_task = sart.SART(self.pygame_screen, background)
-                        # Run SART
-                        sart_data = sart_task.run()
-                        # Save SART data to excel
-                        sart_data.to_excel(writer, "SART", index=False)
-
-                    # Play beep after each task
-                    if self.task_beep:
-                        beep_sound.play()
-
-                    # Save excel file
-                    writer.save()
-
-                # End of experiment screen
-                pygame.display.set_caption("Cognitive Battery")
-                pygame.mouse.set_visible(1)
-
-                background.fill((255, 255, 255))
-                self.pygame_screen.blit(background, (0, 0))
-
-                font = pygame.font.SysFont("arial", 30)
-                display.text(
-                    self.pygame_screen, font, "End of Experiment", "center", "center"
-                )
-
-                pygame.display.flip()
-
-                display.wait_for_space()
-
-                # Quit pygame
-                pygame.quit()
-
-                print("--- Experiment complete")
-                self.close()
+            print("--- Experiment complete")
+            self.close()
 
 
-def main():
-    # Initialize the Qt application
-    app = QtWidgets.QApplication(sys.argv)
-
-    # Get base directory and project directory
-    base_dir = os.path.dirname(os.path.realpath(__file__))
-    project_dir = os.path.join(base_dir, 'cognitive-battery')
-
-    # Set screen resolution (example: 1280x720)
-    res_width = 1280
-    res_height = 720
-
-    # Create and display the main window
-    window = BatteryWindow(base_dir, project_dir, res_width, res_height)
-    window.show()
-
-    # Execute the Qt application
-    sys.exit(app.exec_())
-
-
-if __name__ == "__main__":
-    main()
