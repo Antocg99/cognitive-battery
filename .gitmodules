@@ -1,0 +1,3 @@
+[submodule "tasks/cognitive-battery"]
+	path = tasks/cognitive-battery
+	url = https://github.com/Antocg99/cognitive-battery.git
