@@ -6,30 +6,6 @@ import argparse
 from PyQt5 import QtWidgets
 from interface import  battery_window
 
-
-"""
-if __name__ == "__main__":
-    # Get application directory
-    base_dir = os.path.dirname(os.path.realpath(__file__))
-
-    # Create project manager window
-    app = QtWidgets.QApplication(sys.argv)
-    screen_resolution = app.desktop().screenGeometry()
-    project_dir = os.path.join(base_dir, 'cognitive-battery')
-
-    data_save_path = '/Users/antoniocangelosi/Documents/GitHub/eye_gaze_cognitive_test/data'
-
-    project_manager = battery_window.BatteryWindow(base_dir, project_dir, screen_resolution.width(), screen_resolution.height(), data_save_path)
-    project_manager.show()
-
-    sys.exit(app.exec_())
-    # Parse command line arguments
-    parser = argparse.ArgumentParser(description='Run Cognitive Battery Window')
-    parser.add_argument('--data_save_path', type=str, default='/Users/antoniocangelosi/Documents/GitHub/eye_gaze_cognitive_test/data', help='Path to save data')
-    args = parser.parse_args()
-
-    data_save_path = args.data_save_path
-"""
 def main(data_save_path):
     # Get application directory
     base_dir = os.path.dirname(os.path.realpath(__file__))
