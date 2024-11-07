@@ -11,7 +11,7 @@ from utils import display
 
 
 class Sternberg(object):
-    def __init__(self, screen, background, blocks=2):
+    def __init__(self, screen, background, blocks=1):
         # Get the pygame display window
         self.screen = screen
         self.background = background
@@ -51,14 +51,15 @@ class Sternberg(object):
         self.ITI = 1500
 
         self.STIM_SET = list(range(10))
-        self.SET_SIZE = (2, 6)
+        #self.SET_SIZE = (2, 6)
+        self.SET_SIZE = (2, 3)
         self.PROBE_TYPE = ("present", "absent")
 
         # Create condition combinations
         self.combinations = list(product(self.SET_SIZE, self.PROBE_TYPE))
 
         # Create practice trials
-        self.practice_combinations = self.combinations * 6
+        self.practice_combinations = self.combinations * 1 #6
         random.shuffle(self.practice_combinations)
         self.practice_trials = self.create_trials(self.practice_combinations)
 
@@ -66,7 +67,7 @@ class Sternberg(object):
         self.blocks = []
 
         for i in range(self.NUM_BLOCKS):
-            block_combinations = self.combinations * 12
+            block_combinations = self.combinations * 1 #12
             random.shuffle(block_combinations)
 
             block = self.create_trials(block_combinations)

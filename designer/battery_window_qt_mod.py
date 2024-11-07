@@ -204,6 +204,10 @@ class Ui_CognitiveBattery(object):
         item = QtWidgets.QListWidgetItem()
         item.setCheckState(QtCore.Qt.Unchecked)
         self.taskList.addItem(item)
+
+        item = QtWidgets.QListWidgetItem()
+        item.setCheckState(QtCore.Qt.Unchecked)
+        self.taskList.addItem(item)
         
         item = QtWidgets.QListWidgetItem()
         item.setCheckState(QtCore.Qt.Unchecked)
@@ -408,12 +412,15 @@ class Ui_CognitiveBattery(object):
         
         # Set text for each task in the task list
         item = self.taskList.item(0)
+        item.setText(_translate("CognitiveBattery", "Bouncing Ball"))
+
+        item = self.taskList.item(1)
         item.setText(_translate("CognitiveBattery", "Attention Network Test (ANT)"))
         
-        item = self.taskList.item(1)
+        item = self.taskList.item(2)
         item.setText(_translate("CognitiveBattery", "Digit Span (backwards)"))
         
-        item = self.taskList.item(2)
+        item = self.taskList.item(3)
         item.setText(_translate("CognitiveBattery", "Sternberg Task"))
         
         # Re-enable sorting

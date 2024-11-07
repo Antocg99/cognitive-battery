@@ -447,6 +447,9 @@ class BatteryWindow(QtWidgets.QMainWindow, battery_window_qt_mod.Ui_CognitiveBat
             # Run each task
             # Return and save their output to dataframe/excel
         for task in selected_tasks:
+            if task == "Bouncing Ball":
+                os.system(f"python3.8 /Users/antoniocangelosi/Documents/GitHub/cognitive-battery/tasks/bouncing_ball.py --save_path {self.data_save_path}")
+
             if task == "Attention Network Test (ANT)":
                 # Set number of blocks for ANT
                 ant_task = ant.ANT(
